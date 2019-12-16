@@ -115,7 +115,7 @@ function checkForConfigArg (args) {
             let pathURI = item
             let parsedPath = pathURI.split(/config\=/gi)[1]
             console.log('pURI', parsedPath)
-            argList.shift(argList[index])
+            argList.pop(index)
             return configArg = parsedPath
         }
         return
