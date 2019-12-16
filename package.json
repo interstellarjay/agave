@@ -1,0 +1,26 @@
+{
+  "name": "agave",
+  "version": "1.0.0",
+  "description": "Simple TypeScript React component boilerplate generator CLI ",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "bin": {
+    "agave": "app.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Jay Bedeau",
+  "license": "MIT",
+  "devDependencies": {
+    "chalk": "^3.0.0",
+    "inquirer": "^7.0.0",
+    "jest": "^24.9.0",
+    "node-emoji": "^1.10.0",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {}
+}
