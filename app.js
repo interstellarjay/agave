@@ -44,13 +44,12 @@ function Pascalize (cmp) {
     return pascalizedName
 }
 
-
 // Generate the files
 function createFilesFromTemplate (answers, templatesDir) {
     const cmpList = answers
-
     console.log('cmp', cmpList)
-
+    console.log('dir', templatesDir)
+    return 
     cmpList.forEach((cmpNameRoot) => {
         let cmpName = Pascalize(cmpNameRoot)
         const componentNameDirectory = `${OUT_DIR}/${cmpName}`
@@ -103,34 +102,31 @@ function createFilesFromTemplate (answers, templatesDir) {
 }
 
 // Check for config args
-function checkForConfigArg (argList) {
-
-    console.log(argList)
-    return
-    // Separate config arg from other args
-    let configArg = []; 
-    argList.find((item) => {
-        if (/config\=/gi.test(item)){
-            configArg = argList.shift(item)
-            let pathArray = configArg.split(/=/g);
-            pathArray.shift(0)
-            pathArray = pathArray.pop()
-            pathArray = pathArray.replace('~','//')
-            configArg = pathArray
-            return [configArg]
-        }
-        return 
-    })
+function checkForConfigArg (args) {
 
     // User did not provide args
-    const NO_ARGS_ENTERED = false;
+    const NO_ARGS_ENTERED = false
+
+    // Separate config arg from other args
+    let argList = args || []
+    let configArg = []
+    args.filter((item, index) => {
+        if (/config\=/gi.test(item)){
+            let pathURI = item
+            let parsedPath = pathURI.split(/config\=/gi)[1]
+            console.log('pURI', parsedPath)
+            argList.shift(argList[index])
+            return configArg = parsedPath
+        }
+        return
+    }) || []
 
     // All the arguments Agave CLI was called with
     const params = {
         components:     { 
             values: argList.length > 0 ? argList : NO_ARGS_ENTERED,
         },
-        templatePath:   { 
+        templatePath:   {
             values: configArg.length > 0 ? configArg : NO_ARGS_ENTERED,
         },
     }
@@ -152,28 +148,34 @@ function Main () {
 
     // Check for component arg
     let componentList = process.argv.slice(2)
-    const templatesOrigin = checkForConfigArg(componentList).templatePath.values;
+    let templatesOrigin = checkForConfigArg(componentList).templatePath.values;
     
     // If a templates directory was passed
+    if (templatesOrigin){
+        Log.Info(`Using templates directory: ${JSON.stringify(templatesOrigin)}`)
+    }
+
+    // If a templates directory was NOT passed
     if (!templatesOrigin){
         templatesOrigin = templateList
         Log.Info('Using default directory')
     }
 
-    Log.Info(`Using templates directory: "${templatesOrigin}"`)
+    return
+    // console.log(checkForConfigArg(componentList))
 
-    // If no component names were passed as arguments
-    if (!checkForConfigArg(componentList).components.values){
-        Log.Info('No component arguments passed')
-        return inquirer
-            .prompt(questions)
-            .then((answers) => {
-                let answerList = answers[questions[0].name].split(' ') 
-                return createFilesFromTemplate(answerList, templatePath)
-            })
-    }
+    // // If component names were NOT passed as arguments
+    // if (!checkForConfigArg(componentList).components.values){
+    //     Log.Info('No component arguments passed')
+    //     return inquirer
+    //         .prompt(questions)
+    //         .then((answers) => {
+    //             let answerList = answers[questions[0].name].split(' ') 
+    //             return createFilesFromTemplate(answerList, templatesOrigin)
+    //         })
+    // }
  
-    return createFilesFromTemplate(componentList, templatePath)
+    // return createFilesFromTemplate(componentList, templatePath)
 }
 
 // Run
