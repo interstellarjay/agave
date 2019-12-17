@@ -23,6 +23,9 @@ const templateList = [
     }
 ]
 
+// Template wildcard
+const templateWildcard = `%%_CMP_%%`;
+
 // Output directory
 const OUT_DIR = './'
 
@@ -47,9 +50,7 @@ function Pascalize (cmp) {
 // Generate the files
 function createFilesFromTemplate (answers, templatesDir) {
     const cmpList = answers
-    console.log('cmp', cmpList)
-    console.log('dir', templatesDir)
-    return 
+
     cmpList.forEach((cmpNameRoot) => {
         let cmpName = Pascalize(cmpNameRoot)
         const componentNameDirectory = `${OUT_DIR}/${cmpName}`
@@ -67,33 +68,35 @@ function createFilesFromTemplate (answers, templatesDir) {
         // Populate each template
         if (!templatesDir || templatesDir.length < 1) {
             Log.Info('Using default templates')
-            templateList.map((element) => {
-                let populatedTemplate = element.src.replace(/%%_CMP_%%/g, cmpName)
+            templateList.map((template) => {
+                let populatedTemplate = template.src.replace(/%%_CMP_%%/g, cmpName)
+                let populatedFilePath = template.path.replace(/%%_CMP_%%/g, cmpName)
                 templates.push({
                     src: populatedTemplate,
-                    ext: element.ext
+                    path: populatedFilePath
                 })
             })
         }
-        if (templatesDir > 0) {
-            templatesDir.map((element) => {
-                // let populatedTemplate = element.src.replace(/%%_CMP_%%/g, cmpName)
-                // templates.push({
-                //     src: populatedTemplate,
-                //     ext: element.ext
-                // })
-                return console.log(element);
+        if (templatesDir.length > 0) {
+            templatesDir.map((template) => {
+                let populatedTemplate = template.src.replace(/%%_CMP_%%/g, cmpName)
+                let populatedFilePath = template.path.replace(/%%_CMP_%%/g, cmpName)
+                return templates.push({
+                    src: populatedTemplate,
+                    path: populatedFilePath
+                })
             })
         }
 
+        console.log('templates', templates)
         // Create component nested directory
         fs.mkdirSync(componentNameDirectory)
-        
+
         // Create component files from templates
         templates.map((template) => {
-            fs.appendFile(`${OUT_DIR}/${cmpName}/${cmpName}${template.ext}`, `${template.src}`, function (err) {
+            fs.appendFile(`${OUT_DIR}/${cmpName}/${template.path}`, `${template.src}`, function (err) {
                 if (err) throw err
-                Log.General('bgBlack','greenBright',`${emoji.get('herb')} ${cmpName}${template.ext}`)
+                Log.General('bgBlack','greenBright',`${emoji.get('herb')} ${template.path}`)
                 Log.Success()
             }) 
         })
@@ -114,56 +117,63 @@ function checkForConfigArg (args) {
         if (/config\=/gi.test(item)){
             let pathURI = item
             let parsedPath = pathURI.split(/config\=/gi)[1]
-            console.log('pURI', parsedPath)
+            parsedPath = parsedPath.replace('~','//')
             argList.pop(index)
             return configArg = parsedPath
         }
         return
     }) || []
 
-    // All the arguments Agave CLI was called with
-    const params = {
+    // Return the arguments
+    let params = {
         components:     { 
             values: argList.length > 0 ? argList : NO_ARGS_ENTERED,
         },
         templatePath:   {
             values: configArg.length > 0 ? configArg : NO_ARGS_ENTERED,
         },
+        fileData: []
     }
 
-    console.log(params)
+    // Get all the template file data
+    let templateFilesInDirectory = fs.readdirSync(params.templatePath.values) || NO_ARGS_ENTERED
+    console.log('templateFiles', templateFilesInDirectory)
+    if (templateFilesInDirectory) {
+        templateFilesInDirectory.map((fileData)=> {
+            const absolutePath = `${params.templatePath.values}/${fileData}`
+            const filePath = `${fileData}`
+            const file = fs.readFileSync(absolutePath, 'utf8')
+            params.fileData.push({
+                src: file,
+                path: filePath
+            })
+        })
+    }
+    // All the arguments Agave CLI was called with
     return params
-
-    // // Templates
-    // const templateDirectory = fs.readdirSync(pathArray);
-    // return templateDirectory
 }
 
 
 // Start the application
 function Main () {
-    
     // Show Agave logo
     Log.Logo()
 
     // Check for component arg
     let componentList = process.argv.slice(2)
-    let templatesOrigin = checkForConfigArg(componentList).templatePath.values;
+    let options = checkForConfigArg(componentList)
+    let templatesOrigin = options.templatePath.values
+    let filesOrigin = options.fileData
     
     // If a templates directory was passed
     if (templatesOrigin){
         Log.Info(`Using templates directory: ${JSON.stringify(templatesOrigin)}`)
     }
-
     // If a templates directory was NOT passed
     if (!templatesOrigin){
         templatesOrigin = templateList
         Log.Info('Using default directory')
     }
-
-    return
-    // console.log(checkForConfigArg(componentList))
-
     // // If component names were NOT passed as arguments
     // if (!checkForConfigArg(componentList).components.values){
     //     Log.Info('No component arguments passed')
@@ -174,8 +184,7 @@ function Main () {
     //             return createFilesFromTemplate(answerList, templatesOrigin)
     //         })
     // }
- 
-    // return createFilesFromTemplate(componentList, templatePath)
+    return createFilesFromTemplate(componentList, filesOrigin)
 }
 
 // Run
