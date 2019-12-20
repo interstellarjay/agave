@@ -16,11 +16,11 @@
   "author": "Jay Bedeau",
   "license": "MIT",
   "devDependencies": {
-    "chalk": "^3.0.0",
-    "inquirer": "^7.0.0",
-    "jest": "^24.9.0",
-    "node-emoji": "^1.10.0",
     "nodemon": "^2.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "node-emoji": "^1.10.0",
+    "chalk": "^3.0.0",
+    "inquirer": "^7.0.0"
+  }
 }
