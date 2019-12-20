@@ -1,7 +1,7 @@
 {
-  "name": "agave",
-  "version": "1.0.0",
-  "description": "Simple TypeScript React component boilerplate generator CLI ",
+  "name": "agave-cli",
+  "version": "0.1.0",
+  "description": "Fast, easy code generator from your templates",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

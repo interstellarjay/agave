@@ -3,8 +3,8 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { Button } from '@storybook/react/demo';
 
-// %%_CMP_%% story
-export const default = () => <%%_CMP_%% onClick={action('clicked')} />;
+// %%c%% story
+export const default = () => <%%c%% onClick={action('clicked')} />;
 `
 
 module.exports = {

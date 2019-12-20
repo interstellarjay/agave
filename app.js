@@ -12,15 +12,15 @@ const USING_AUTO_TEMPLATES = false
 const DEFAULT_TEMPLATE_LIST = [
     { 
         src: TEMPLATE_REACT, 
-        path: '%%_CMP_%%.tsx'
+        path: '%%c%%.tsx'
     },
     {
         src: TEMPLATE_STORYBOOK,
-        path: '%%_CMP_%%.stories.ts'
+        path: '%%c%%.stories.ts'
     },
     {
         src: TEMPLATE_JESTENZYME,
-        path: '%%_CMP_%%.test.ts'
+        path: '%%c%%.test.ts'
     }
 ]
 
@@ -79,8 +79,8 @@ function createFilesFromTemplate (answers, templatesDir, templateProvider) {
         }
         
         templatesDir.map((template) => {
-            let populatedTemplate = template.src.replace(/%%_CMP_%%/g, cmpName)
-            let populatedFilePath = template.path.replace(/%%_CMP_%%/g, cmpName)
+            let populatedTemplate = template.src.replace(/%%c%%/g, cmpName)
+            let populatedFilePath = template.path.replace(/%%c%%/g, cmpName)
             return templates.push({
                 src: populatedTemplate,
                 path: populatedFilePath
@@ -164,7 +164,7 @@ function Main () {
 
     // If a templates directory was passed
     if (templatesOrigin){
-        Log.Info(`Using templates directory: ${JSON.stringify(templatesOrigin)}`)
+        Log.Info(`Using a custom templates directory`)
     }
 
     // If a templates directory was NOT passed
