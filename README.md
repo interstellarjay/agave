@@ -74,14 +74,14 @@ There are 3 ways to run Agave.
 #### 1. :herb: Provide just the template directory | :white_check_mark:Recommended 
 Agave will use all the template files in the directory specified to build your components. Agave will then ask for the names of the components you want to generate.
 ```bash
-agave-cli config=path/to/templates
+npx agave-cli config=path/to/templates
 ```
 ---
 
 #### 2. :herb: Provide both template directory and component names
 Agave will use all the template files in the directory specified to build your components. Agave will treat all arguments that do not start with config= as component names and build these components. 
 ```bash
-agave-cli config=path/to/templates myComponent1 myComponent2 myComponentN
+npx agave-cli config=path/to/templates myComponent1 myComponent2 myComponentN
 ```
 ---
 
