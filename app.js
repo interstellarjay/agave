@@ -162,15 +162,8 @@ function Main () {
     let templatesOrigin = options.templatePath && options.templatePath.values ? options.templatePath.values : DEFAULT_TEMPLATE_LIST
     let filesOrigin = options.fileData ? options.fileData : false
 
-    // If a templates directory was passed
-    if (templatesOrigin){
-        Log.Info(`Using a custom templates directory`)
-    }
-
     // If a templates directory was NOT passed
-    if (!templatesOrigin){
-        Log.Info('Using default directory')
-    }
+    Log.Info(`Processing ... `)
 
     // If arguments NOT passed to CLI
     if (!options){

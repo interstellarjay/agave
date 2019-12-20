@@ -1,6 +1,6 @@
 {
   "name": "agave-cli",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Fast, easy code generator from your templates",
   "main": "app.js",
   "scripts": {
